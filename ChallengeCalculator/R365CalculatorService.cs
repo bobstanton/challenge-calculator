@@ -1,8 +1,22 @@
 ﻿internal class R365CalculatorService : ICalculatorService
 {
+    private readonly CalculatorConfig _config;
+
+    public R365CalculatorService(CalculatorConfig config)
+    {
+        _config = config;
+    }
+
     public int Calculate(string input)
     {
         var operands = ParseExpression(input, '\n');
+
+        if (_config.OnlyAcceptPositiveInputs)
+        {
+            var negativeNumbers = operands.Where(x => x < 0);
+            if (negativeNumbers.Any())
+                throw new ArgumentException($"Only positive inputs are supported, the following negative numbers were found: {string.Join(", ", negativeNumbers)}");
+        }
 
         return operands.Sum();
     }

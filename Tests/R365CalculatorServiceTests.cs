@@ -1,6 +1,8 @@
 [TestClass]
 public class R365CalculatorServiceTests
 {
+    private readonly CalculatorConfig _defaultConfig = new CalculatorConfig { OnlyAcceptPositiveInputs = false };
+
     [TestMethod]
     [DataRow("20", 20)]
     [DataRow("0", 0)]
@@ -9,7 +11,7 @@ public class R365CalculatorServiceTests
     [DataRow("-20", -20)]
     public void Calculate_SingleNumber_ReturnsNumber(string input, int expected)
     {
-        var calculatorService = new R365CalculatorService();
+        var calculatorService = new R365CalculatorService(_defaultConfig);
 
         var actual = calculatorService.Calculate(input);
 
@@ -33,7 +35,7 @@ public class R365CalculatorServiceTests
     [DataRow("\n1\n\n2\n3\n", 6)]
     public void Calculate_MultipleNumbers_ReturnsSum(string input, int expected)
     {
-        var calculatorService = new R365CalculatorService();
+        var calculatorService = new R365CalculatorService(_defaultConfig);
 
         var actual = calculatorService.Calculate(input);
 
@@ -53,11 +55,26 @@ public class R365CalculatorServiceTests
     [DataRow(",,,")]
     public void Calculate_InvalidInput_ReturnsZero(string input)
     {
-        var calculatorService = new R365CalculatorService();
+        var calculatorService = new R365CalculatorService(_defaultConfig);
 
         var actual = calculatorService.Calculate(input);
 
         Assert.AreEqual(0, actual);
     }
+
+    [TestMethod]
+    [DataRow("-1")]
+    [DataRow("-1,-1")]
+    [DataRow("-1,1,-1")]
+    [DataRow("1,-1")]
+    [DataRow("-1,1")]
+    public void Calculate_WithNegativeInput_ThrowsArgumentException(string input)
+    {
+        var calculatorService = new R365CalculatorService(new CalculatorConfig() { OnlyAcceptPositiveInputs = true });
+
+        // Act and Assert
+        Assert.ThrowsException<ArgumentException>(() => calculatorService.Calculate(input));
+    }
+
 
 }

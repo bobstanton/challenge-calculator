@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ChallengeCalculator": {
+      "commandName": "Project"
+    },
+    "Positive Only": {
+      "commandName": "Project",
+      "commandLineArgs": "-p"
+    }
+  }
+}
