@@ -9,7 +9,10 @@
 
     public int Calculate(string input)
     {
-        var operands = ParseExpression(input, '\n');
+        var (customDelimiter, remainingExpression) = ParseDelimiter(input);
+
+        char[] delimiters = customDelimiter.HasValue ? ['\n', customDelimiter.Value] : ['\n'];
+        var operands = ParseExpression(remainingExpression, delimiters);
 
         ValidateOperands(operands);
 
@@ -58,5 +61,16 @@
             }
         }
     }
+
+    private (char? customDelimiter, string remainingExpression) ParseDelimiter(string input)
+    {
+        if (!(input.StartsWith("//") && input[3] == '\n'))
+            return (null, input);
+
+        var delimiter = input[2];
+        
+        return (delimiter, input.Substring(4));
+    }
+
 
 }

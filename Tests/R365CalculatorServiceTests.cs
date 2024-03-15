@@ -72,7 +72,6 @@ public class R365CalculatorServiceTests
     {
         var calculatorService = new R365CalculatorService(new CalculatorConfig() { OnlyAcceptPositiveInputs = true });
 
-        // Act and Assert
         Assert.ThrowsException<ArgumentException>(() => calculatorService.Calculate(input));
     }
 
@@ -81,6 +80,18 @@ public class R365CalculatorServiceTests
     public void Calculate_WithInputCeiling_ShouldReplaceOperandsGreaterThanCeilingWithZero(string input, int expected)
     {
         var calculatorService = new R365CalculatorService(new CalculatorConfig() { InputCeiling = 1000 });
+
+        var actual = calculatorService.Calculate(input);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    [DataRow("//#\n2#5", 7)]
+    [DataRow("//,\n2,ff,100", 102)]
+    public void Calculate_WithCustomDelimiter_ShouldReturnCorrectResult(string input, int expected)
+    {
+        var calculatorService = new R365CalculatorService(_defaultConfig);
 
         var actual = calculatorService.Calculate(input);
 
