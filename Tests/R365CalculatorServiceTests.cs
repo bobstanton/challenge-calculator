@@ -98,4 +98,17 @@ public class R365CalculatorServiceTests
         Assert.AreEqual(expected, actual);
     }
 
+    [TestMethod]
+    [DataRow("//[***]\n11***22***33", 66)]
+    [DataRow("//[*][!!][r9r]\n11r9r22*hh*33!!44", 110)]
+    public void Calculate_WithMultipleCustomDelimiters_ShouldReturnCorrectResult(string input, int expected)
+    {
+        var calculatorService = new R365CalculatorService(_defaultConfig);
+
+        var actual = calculatorService.Calculate(input);
+
+        Assert.AreEqual(expected, actual);
+    }
+
+
 }

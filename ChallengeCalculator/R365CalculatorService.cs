@@ -9,22 +9,21 @@
 
     public int Calculate(string input)
     {
-        var (customDelimiter, remainingExpression) = ParseDelimiter(input);
+        var (customDelimiters, remainingExpression) = ParseDelimiters(input);
 
-        char[] delimiters = customDelimiter.HasValue ? ['\n', customDelimiter.Value] : ['\n'];
-        var operands = ParseExpression(remainingExpression, delimiters);
+        var operands = ParseExpression(remainingExpression, ["\n", .. customDelimiters]);
 
         ValidateOperands(operands);
 
         return operands.Sum();
     }
 
-    private IList<int> ParseExpression(string input, params char[]? additionalDelimiters)
+    private IList<int> ParseExpression(string input, params string[]? additionalDelimiters)
     {
         if (string.IsNullOrEmpty(input))
             return [0];
 
-        var inputOperands = input.Split([',', ..additionalDelimiters]);
+        var inputOperands = input.Split([",", ..additionalDelimiters], StringSplitOptions.None);
 
         var parsedOperands = new List<int>(inputOperands.Length);
 
@@ -62,14 +61,28 @@
         }
     }
 
-    private (char? customDelimiter, string remainingExpression) ParseDelimiter(string input)
+    private (string[] customDelimiters, string remainingExpression) ParseDelimiters(string input)
     {
-        if (!(input.StartsWith("//") && input[3] == '\n'))
-            return (null, input);
+        //no delimiter
+        if (!(input.StartsWith("//") && input[3] == '\n') && !input.StartsWith("//["))
+            return ([], input);
 
-        var delimiter = input[2];
-        
-        return (delimiter, input.Substring(4));
+        //single delimiter
+        if (!input.StartsWith("//["))
+        {
+            var delimiter = input[2].ToString();
+
+            return ([delimiter], input.Substring(4));
+        }
+
+        //multiple delimiters
+        var delimiterEnd = input.IndexOf("]\n");
+
+        //TODO: There should be a lot more validation around invalid delimiters, like a missing \n or missing brackets
+
+        var delimiters = input.Substring(3, delimiterEnd - 3).Split("][");
+
+        return (delimiters, input.Substring(delimiterEnd));
     }
 
 
