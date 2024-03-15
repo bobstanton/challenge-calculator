@@ -1,14 +1,8 @@
 ﻿internal class R365CalculatorService : ICalculatorService
 {
-    private static readonly int MaxNumberOfOperands = 2;
-
     public int Calculate(string input)
     {
         var operands = ParseExpression(input);
-
-        //JIRA-1 - Throw an exception when more than 2 numbers are provided
-        if (operands.Count > MaxNumberOfOperands)
-            throw new InvalidOperationException($"Maximum number of operands supported is {MaxNumberOfOperands} but {operands.Count} were found.");
 
         return operands.Sum();
     }

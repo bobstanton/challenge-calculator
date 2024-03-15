@@ -20,6 +20,14 @@ public class R365CalculatorServiceTests
     [DataRow("1,5000", 5001)]
     [DataRow("4,-3", 1)]
     [DataRow("5,tytyt", 5)]
+    [DataRow("1,2,3,4,5,6,7,8,9,10,11,12", 78)]
+    [DataRow("1,2,3", 6)]
+    [DataRow("1,2,3,4", 10)]
+    [DataRow("1,,2,,3", 6)]
+    [DataRow(",1,2,3", 6)]
+    [DataRow("1,2,3,", 6)]
+    [DataRow(",1,2,3,", 6)]
+    [DataRow(",,1,2,3,,", 6)]
     public void Calculate_MultipleNumbers_ReturnsSum(string input, int expected)
     {
         var calculatorService = new R365CalculatorService();
@@ -32,9 +40,14 @@ public class R365CalculatorServiceTests
     [TestMethod]
     [DataRow("")]
     [DataRow("invalid")]
+    [DataRow("invalid,invalid")]
     [DataRow(",0")]
+    [DataRow(",,0")]
     [DataRow("0,")]
+    [DataRow("0,,")]
     [DataRow(",")]
+    [DataRow(",,")]
+    [DataRow(",,,")]
     public void Calculate_InvalidInput_ReturnsZero(string input)
     {
         var calculatorService = new R365CalculatorService();
@@ -44,14 +57,4 @@ public class R365CalculatorServiceTests
         Assert.AreEqual(0, actual);
     }
 
-    [TestMethod]
-    [DataRow("1,2,3")]
-    [DataRow("1,2,3,4")]
-    [DataRow("1,,2,,3")]
-    public void Calculate_ThrowsException_WhenNumberOfOperandsExceedsMax(string input)
-    {
-        var calculatorService = new R365CalculatorService();
-
-        Assert.ThrowsException<InvalidOperationException>(() => calculatorService.Calculate(input));
-    }
 }
