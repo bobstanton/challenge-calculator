@@ -6,6 +6,22 @@
     "Positive Only": {
       "commandName": "Project",
       "commandLineArgs": "-p"
+    },
+    "Loop Mode": {
+      "commandName": "Project",
+      "commandLineArgs": "-l"
+    },
+    "Alternate Delimiter": {
+      "commandName": "Project",
+      "commandLineArgs": "-a @"
+    },
+    "Show Formula": {
+      "commandName": "Project",
+      "commandLineArgs": "-f"
+    },
+    "Multiplication": {
+      "commandName": "Project",
+      "commandLineArgs": "-f -o Multiplication"
     }
   }
 }

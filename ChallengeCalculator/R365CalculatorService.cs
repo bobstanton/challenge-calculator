@@ -1,6 +1,15 @@
-﻿internal class R365CalculatorService : ICalculatorService
+﻿using System.Linq;
+
+internal class R365CalculatorService : ICalculatorService
 {
     private readonly CalculatorConfig _config;
+    private readonly Dictionary<string, string> _operators = new Dictionary<string, string>
+    {
+        ["Addition"] = "+",
+        ["Subtraction"] = "-",
+        ["Multiplication"] = "*",
+        ["Division"] = "/"
+    };
 
     public R365CalculatorService(CalculatorConfig config)
     {
@@ -9,13 +18,30 @@
 
     public int Calculate(string input)
     {
+        var (result, _) = CalculateWithFormula(input);
+        return result;
+    }
+
+    public (int result, string formula) CalculateWithFormula(string input)
+    {
         var (customDelimiters, remainingExpression) = ParseDelimiters(input);
 
-        var operands = ParseExpression(remainingExpression, ["\n", .. customDelimiters]);
+        var operands = ParseExpression(remainingExpression, [_config.AlternateDelimiter ?? "\n", .. customDelimiters]);
 
         ValidateOperands(operands);
 
-        return operands.Sum();
+        var result = _config.Operation switch
+        {
+            "Addition" => operands.Sum(),
+            "Subtraction" => operands.Aggregate((x, y) => x - y),
+            "Multiplication" => operands.Aggregate(1, (x, y) => x * y),
+            "Division" => operands.Aggregate((x, y) => x / y),
+            _ => throw new ArgumentException($"Unsupported operation: {_config.Operation}")
+        };
+
+        var formula = string.Join(_operators[_config.Operation], operands);
+
+        return (result, formula);
     }
 
     private IList<int> ParseExpression(string input, params string[]? additionalDelimiters)
