@@ -10,12 +10,18 @@ builder.Services.AddHostedService<CalculatorHost>();
 var rootCommand = new RootCommand("Restaurant365 Code Challenge - String Calculator");
 var positive = new Option<bool>(new[] { "--positive", "-p" }, "Only accepts positive inputs.");
 rootCommand.AddOption(positive);
+var ceiling = new Option<bool>(new[] { "--ceiling", "-c" }, "Sets a limit of 1000 for input values.");
+rootCommand.AddOption(ceiling);
 
-rootCommand.SetHandler((bool positive) =>
+rootCommand.SetHandler((bool positive, bool ceiling) =>
 {
-    var calculatorConfig = new CalculatorConfig { OnlyAcceptPositiveInputs = positive };
+    var calculatorConfig = new CalculatorConfig { 
+        OnlyAcceptPositiveInputs = positive,
+        InputCeiling = ceiling ? 1000 : null
+    };
+
     builder.Services.AddSingleton<CalculatorConfig>(calculatorConfig);
-}, positive);
+}, positive, ceiling);
 
 rootCommand.Invoke(args);
 

@@ -11,12 +11,7 @@
     {
         var operands = ParseExpression(input, '\n');
 
-        if (_config.OnlyAcceptPositiveInputs)
-        {
-            var negativeNumbers = operands.Where(x => x < 0);
-            if (negativeNumbers.Any())
-                throw new ArgumentException($"Only positive inputs are supported, the following negative numbers were found: {string.Join(", ", negativeNumbers)}");
-        }
+        ValidateOperands(operands);
 
         return operands.Sum();
     }
@@ -44,4 +39,24 @@
 
         return parsedOperands;
     }
+
+    private void ValidateOperands(IList<int> operands)
+    {
+        if (_config.OnlyAcceptPositiveInputs)
+        {
+            var negativeNumbers = operands.Where(x => x < 0);
+            if (negativeNumbers.Any())
+                throw new ArgumentException($"Only positive inputs are supported, the following negative numbers were found: {string.Join(", ", negativeNumbers)}");
+        }
+
+        if (_config.InputCeiling.HasValue)
+        {
+            for (int i = 0; i < operands.Count; i++)
+            {
+                if (operands[i] > _config.InputCeiling)
+                    operands[i] = 0;
+            }
+        }
+    }
+
 }

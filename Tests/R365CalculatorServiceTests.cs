@@ -76,5 +76,15 @@ public class R365CalculatorServiceTests
         Assert.ThrowsException<ArgumentException>(() => calculatorService.Calculate(input));
     }
 
+    [TestMethod]
+    [DataRow("2,1001,6", 8)]
+    public void Calculate_WithInputCeiling_ShouldReplaceOperandsGreaterThanCeilingWithZero(string input, int expected)
+    {
+        var calculatorService = new R365CalculatorService(new CalculatorConfig() { InputCeiling = 1000 });
+
+        var actual = calculatorService.Calculate(input);
+
+        Assert.AreEqual(expected, actual);
+    }
 
 }
