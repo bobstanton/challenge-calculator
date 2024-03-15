@@ -28,6 +28,9 @@ public class R365CalculatorServiceTests
     [DataRow("1,2,3,", 6)]
     [DataRow(",1,2,3,", 6)]
     [DataRow(",,1,2,3,,", 6)]
+    [DataRow("1\n2,3", 6)]
+    [DataRow("1\n2\n3", 6)]
+    [DataRow("\n1\n\n2\n3\n", 6)]
     public void Calculate_MultipleNumbers_ReturnsSum(string input, int expected)
     {
         var calculatorService = new R365CalculatorService();

@@ -2,17 +2,17 @@
 {
     public int Calculate(string input)
     {
-        var operands = ParseExpression(input);
+        var operands = ParseExpression(input, '\n');
 
         return operands.Sum();
     }
 
-    private IList<int> ParseExpression(string input)
+    private IList<int> ParseExpression(string input, params char[]? additionalDelimiters)
     {
         if (string.IsNullOrEmpty(input))
             return [0];
 
-        var inputOperands = input.Split([',']);
+        var inputOperands = input.Split([',', ..additionalDelimiters]);
 
         var parsedOperands = new List<int>(inputOperands.Length);
 
